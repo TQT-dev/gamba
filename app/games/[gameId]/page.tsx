@@ -1,5 +1,6 @@
 import { Header } from "@/components/Header";
 import { GameRunner } from "@/components/GameRunner";
+import { GameVisualizer } from "@/components/GameVisualizer";
 import { GAMES, GameId } from "@/lib/types";
 
 function toGameId(value: string): GameId {
@@ -18,6 +19,7 @@ export default function GamePage({ params }: { params: { gameId: string } }) {
         <h2 className="text-3xl font-bold">{game?.title ?? "Game"}</h2>
         <p className="text-white/70 text-sm">{game?.description}</p>
       </div>
+      <GameVisualizer gameId={gameId} />
       <GameRunner gameId={gameId} />
       <div className="text-xs text-white/60">
         Server authoritative scoring. Every run uses today&apos;s deterministic seed for fairness. Virtual coins only.
