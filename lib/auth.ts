@@ -15,7 +15,13 @@ export async function getSession() {
       token_hash: tokenHash,
       expires_at: { gt: new Date() },
     },
-    include: { user: true, wallet: true },
+    include: {
+      user: {
+        include: {
+          wallet: true,
+        },
+      },
+    },
   });
   return session;
 }
