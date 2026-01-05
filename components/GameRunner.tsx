@@ -125,10 +125,11 @@ export function GameRunner({ gameId }: { gameId: GameId }) {
       </div>
 
       {result && (
-        <div className="bg-white/5 rounded-lg p-3">
+        <div className="bg-white/5 rounded-lg p-3 space-y-2">
           <p className="text-sm">
             Score: {result.score} | Coins: {result.coins}
           </p>
+          {result.details && <ResultDetails gameId={gameId} details={result.details} />}
         </div>
       )}
       {status && <p className="text-xs text-white/60">{status}</p>}
@@ -617,4 +618,41 @@ function MiniCardRow({ label, cards, highlight }: { label: string; cards: string
       </div>
     </div>
   );
+}
+
+function ResultDetails({ gameId, details }: { gameId: GameId; details: any }) {
+  switch (gameId) {
+    case "crash":
+      return (
+        <div className="text-xs text-white/70">
+          Crash point: {details.crashPoint}x · Your cash: {details.cashAt ?? "N/A"}s
+        </div>
+      );
+    case "mines":
+      return (
+        <div className="text-xs text-white/70">
+          Revealed: {details.reveals?.length ?? 0} tiles · Banked: {details.banked ?? 0}
+        </div>
+      );
+    case "plinko":
+      return (
+        <div className="text-xs text-white/70">
+          Landings: {(details.landings || []).map((l: number, i: number) => `#${i + 1}→${l}`).join(", ") || "none"}
+        </div>
+      );
+    case "blackjack":
+      return (
+        <div className="text-xs text-white/70">
+          Hands played: {(details.hands || []).length} · Decisions: {(details.hands || [])
+            .map((h: any) => `${h.index}:${(h.decisions || []).join("/")}`)
+            .join(", ")}
+        </div>
+      );
+    case "roulette":
+      return (
+        <div className="text-xs text-white/70">
+          Spins: {(details.spins || []).map((s: any) => `#${s.spin + 1}:${s.result}`).join(", ")}
+        </div>
+      );
+  }
 }

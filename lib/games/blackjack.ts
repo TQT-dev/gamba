@@ -48,6 +48,7 @@ export function simulateBlackjack(seed: string, transcript: RunAction[]) {
   const shoe = makeShoe(seed);
   let score = 0;
   let streak = 0;
+  const hands: { index: number; decisions: Decision[] }[] = [];
 
   for (let handIndex = 0; handIndex < 10; handIndex++) {
     const player: Hand = deal(shoe, 2);
@@ -57,6 +58,7 @@ export function simulateBlackjack(seed: string, transcript: RunAction[]) {
     )?.payload?.decisions || []) as Decision[];
 
     let betMultiplier = 1;
+    hands.push({ index: handIndex, decisions: actions });
     for (const decision of actions) {
       if (decision === "hit") player.push(...deal(shoe, 1));
       if (decision === "double" && player.length === 2) {
@@ -90,5 +92,5 @@ export function simulateBlackjack(seed: string, transcript: RunAction[]) {
     }
   }
 
-  return { score };
+  return { score, details: { hands } };
 }

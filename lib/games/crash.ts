@@ -20,12 +20,13 @@ export function simulateCrashRun(seed: string, transcript: RunAction[]) {
   const state = initialCrashState(seed);
   state.actions = transcript;
   const cash = transcript.find((a) => a.type === "cashout");
-  const cashAt = cash?.at ?? 0;
+  const cashAt = cash?.at ?? state.crashPoint + 1; // if no cash, treat as after crash
   const multiplier = crashMultiplier(cashAt);
   const crashed = multiplier >= state.crashPoint;
   return {
     score: crashed ? 0 : Number(multiplier.toFixed(2)),
     crashPoint: Number(state.crashPoint.toFixed(2)),
     crashed,
+    details: { crashPoint: Number(state.crashPoint.toFixed(2)), cashAt: Number(cashAt.toFixed(2)) },
   };
 }

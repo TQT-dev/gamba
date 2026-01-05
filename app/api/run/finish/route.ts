@@ -52,7 +52,7 @@ export async function POST(req: Request) {
 
     await updateLeaderboardAggregate(session.user_id, run.game_id as GameId, date);
 
-    return NextResponse.json({ score: result.score, coins, verified: true });
+    return NextResponse.json({ score: result.score, coins, verified: true, details: result.details, seedHash: seed });
   } catch (err: any) {
     return NextResponse.json({ error: err.message ?? "Failed" }, { status: 400 });
   }

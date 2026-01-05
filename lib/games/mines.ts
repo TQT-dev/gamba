@@ -23,6 +23,7 @@ export function simulateMines(seed: string, transcript: RunAction[]) {
   let safeCount = 0;
   let banked = 0;
   let busted = false;
+  const reveals: number[] = [];
 
   for (const action of transcript) {
     if (action.type === "reveal") {
@@ -32,6 +33,7 @@ export function simulateMines(seed: string, transcript: RunAction[]) {
         break;
       }
       safeCount += 1;
+      reveals.push(idx);
     }
     if (action.type === "bank") {
       const multiplier = 1 + safeCount * 0.25;
@@ -40,10 +42,10 @@ export function simulateMines(seed: string, transcript: RunAction[]) {
   }
 
   if (busted) {
-    return { score: banked, busted: true, mines };
+    return { score: banked, busted: true, mines, details: { reveals, banked } };
   }
 
   const multiplier = 1 + safeCount * 0.25;
   banked = banked || Math.round(10 * multiplier);
-  return { score: banked, busted: false, mines };
+  return { score: banked, busted: false, mines, details: { reveals, banked } };
 }

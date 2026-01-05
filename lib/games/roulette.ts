@@ -34,16 +34,18 @@ function payout(bet: Bet, result: number) {
 export function simulateRoulette(seed: string, transcript: RunAction[]) {
   let bankroll = 100;
   const results: number[] = [];
+  const spins: { spin: number; result: number; bets: Bet[] }[] = [];
   for (let i = 0; i < 10; i++) {
     const action = transcript.find((a) => a.type === "spin" && a.payload?.spin === i);
     const bets = (action?.payload?.bets as Bet[]) || [];
     const result = spin(seed, i);
     results.push(result);
+    spins.push({ spin: i, result, bets });
     for (const bet of bets) {
       bankroll += payout(bet, result);
     }
   }
   const variancePenalty = Math.max(0, (bankroll - 100) * 0.1);
   const score = Math.round(bankroll - variancePenalty);
-  return { score, results };
+  return { score, results, details: { spins } };
 }

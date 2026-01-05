@@ -11,6 +11,7 @@ export function simulatePlinko(seed: string, transcript: RunAction[]) {
   const r = rng(seed + "-plinko");
   let score = 0;
   let ballIndex = 0;
+  const landings: number[] = [];
   for (const action of transcript as PlinkoAction[]) {
     if (action.type !== "drop") continue;
     let position = Math.min(Math.max(action.payload.slot, 0), SLOTS - 1);
@@ -25,8 +26,9 @@ export function simulatePlinko(seed: string, transcript: RunAction[]) {
     }
     const landed = SLOT_MULTIPLIERS[position];
     score += landed;
+    landings.push(position);
     ballIndex += 1;
     if (ballIndex >= 10) break;
   }
-  return { score: Number(score.toFixed(2)) };
+  return { score: Number(score.toFixed(2)), details: { landings } };
 }
