@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     const { seed, record } = await getDailySeed(gameId as GameId, date);
     const run = await prisma.run.create({
       data: {
-        user: { connect: { id: session.user_id } },
+        user_id: session.user_id,
         game_id: gameId,
         date,
         transcript_json: [],

@@ -57,6 +57,10 @@ export function GameRunner({ gameId }: { gameId: GameId }) {
 
   async function handleFinish() {
     if (!runId) return;
+    if (transcript.length === 0) {
+      setStatus("Voeg minstens één actie toe voordat je afrondt.");
+      return;
+    }
     setLoading(true);
     setStatus("Finishing run...");
     try {
@@ -160,6 +164,9 @@ function CrashControls({ active, onAction }: { active: boolean; onAction: (a: Ru
         if (!startTime.current) return;
         setElapsed((Date.now() - startTime.current) / 1000);
       }, 100);
+    } else {
+      setElapsed(0);
+      setCashed(false);
     }
     return () => {
       if (timer.current) clearInterval(timer.current);
@@ -199,6 +206,10 @@ function CrashControls({ active, onAction }: { active: boolean; onAction: (a: Ru
 function MinesControls({ active, onAction }: { active: boolean; onAction: (a: RunAction) => void }) {
   const [revealed, setRevealed] = useState<Set<number>>(new Set());
   const cells = Array.from({ length: 25 });
+
+  useEffect(() => {
+    if (!active) setRevealed(new Set());
+  }, [active]);
 
   function reveal(idx: number) {
     if (!active || revealed.has(idx)) return;
@@ -242,6 +253,15 @@ function PlinkoControls({ active, onAction }: { active: boolean; onAction: (a: R
   const [nudgeRow, setNudgeRow] = useState<number | undefined>(4);
   const [nudgeDir, setNudgeDir] = useState<-1 | 1>(1);
   const [ball, setBall] = useState(0);
+
+  useEffect(() => {
+    if (!active) {
+      setBall(0);
+      setSlot(3);
+      setNudgeRow(4);
+      setNudgeDir(1);
+    }
+  }, [active]);
 
   function addDrop() {
     if (!active || ball >= 10) return;
@@ -290,6 +310,13 @@ function BlackjackControls({ active, onAction }: { active: boolean; onAction: (a
   const [hand, setHand] = useState(0);
   const [decisions, setDecisions] = useState("hit,stand");
 
+  useEffect(() => {
+    if (!active) {
+      setHand(0);
+      setDecisions("hit,stand");
+    }
+  }, [active]);
+
   function addHand() {
     if (!active || hand > 9) return;
     const parsed = decisions
@@ -328,6 +355,16 @@ function RouletteControls({ active, onAction }: { active: boolean; onAction: (a:
   const [value, setValue] = useState<number | undefined>(undefined);
   const [amount, setAmount] = useState(5);
   const [betsBySpin, setBetsBySpin] = useState<Record<number, any[]>>({});
+
+  useEffect(() => {
+    if (!active) {
+      setSpin(0);
+      setBetType("red");
+      setValue(undefined);
+      setAmount(5);
+      setBetsBySpin({});
+    }
+  }, [active]);
 
   function addBet() {
     if (!active || spin > 9) return;
