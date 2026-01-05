@@ -17,7 +17,6 @@ export async function getSession() {
     },
     include: { user: true, wallet: true },
   });
-  if (!session) return null;
   return session;
 }
 
