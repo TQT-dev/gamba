@@ -17,11 +17,11 @@ export default async function Home() {
       <div className="card grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div>
           <p className="text-white/60 text-sm">Coins</p>
-          <p className="text-3xl font-bold">{(session as any)?.user?.wallet?.coins ?? 0}</p>
+          <p className="text-3xl font-bold">{session?.wallet?.coins ?? 0}</p>
         </div>
         <div>
           <p className="text-white/60 text-sm">Logged in as</p>
-          <p className="text-xl font-semibold">{(session as any)?.user?.nickname ?? "Guest"}</p>
+          <p className="text-xl font-semibold">{session?.user.nickname ?? "Guest"}</p>
         </div>
         <div>
           <p className="text-white/60 text-sm">Safety</p>

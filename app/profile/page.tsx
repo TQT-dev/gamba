@@ -32,11 +32,11 @@ export default async function ProfilePage() {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-white/60">Nickname</p>
-            <p className="text-xl font-semibold">{(session as any).user.nickname}</p>
+            <p className="text-xl font-semibold">{session.user.nickname}</p>
           </div>
           <div className="text-right">
             <p className="text-sm text-white/60">Coins</p>
-            <p className="text-xl font-semibold">{(session as any).user.wallet?.coins ?? 0}</p>
+            <p className="text-xl font-semibold">{session.wallet?.coins ?? 0}</p>
           </div>
         </div>
         <p className="text-sm text-white/60">Stats summary</p>
