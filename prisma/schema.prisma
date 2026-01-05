@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = env("DATABASE_PROVIDER")
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String     @id @default(cuid())
+  nickname   String     @unique
+  pin_hash   String
+  created_at DateTime   @default(now())
+  sessions   Session[]
+  wallet     Wallet?
+  friendships Friendship[] @relation("UserFriends")
+  friendsOf   Friendship[] @relation("FriendOf")
+  runs       Run[]
+  aggregates LeaderboardAggregate[]
+}
+
+model Session {
+  id         String   @id @default(cuid())
+  user       User     @relation(fields: [user_id], references: [id])
+  user_id    String
+  token_hash String
+  created_at DateTime @default(now())
+  expires_at DateTime
+}
+
+model Friendship {
+  id             String   @id @default(cuid())
+  user           User     @relation("UserFriends", fields: [user_id], references: [id])
+  user_id        String
+  friend         User     @relation("FriendOf", fields: [friend_user_id], references: [id])
+  friend_user_id String
+  created_at     DateTime @default(now())
+}
+
+model Wallet {
+  user       User   @relation(fields: [user_id], references: [id])
+  user_id    String @id
+  coins      Int    @default(500)
+}
+
+model DailySeed {
+  id            String   @id @default(cuid())
+  game_id       String
+  date          String
+  seed_hash     String
+  revealed_seed String?
+  created_at    DateTime @default(now())
+
+  @@unique([game_id, date])
+}
+
+model Run {
+  id             String   @id @default(cuid())
+  user           User     @relation(fields: [user_id], references: [id])
+  user_id        String
+  game_id        String
+  date           String
+  transcript_json Json
+  score          Int
+  coins_awarded  Int
+  verified       Boolean  @default(false)
+  created_at     DateTime @default(now())
+}
+
+model LeaderboardAggregate {
+  id          String   @id @default(cuid())
+  game_id     String
+  date        String
+  user        User     @relation(fields: [user_id], references: [id])
+  user_id     String
+  daily_score Int
+  updated_at  DateTime @default(now())
+
+  @@unique([game_id, date, user_id], name: "game_id_date_user_id")
+}
