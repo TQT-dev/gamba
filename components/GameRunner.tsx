@@ -158,6 +158,9 @@ function CrashControls({ active, onAction }: { active: boolean; onAction: (a: Ru
   const timer = useRef<NodeJS.Timer | null>(null);
   const startTime = useRef<number | null>(null);
 
+  // TODO(Codex 5.2): The timer keeps running after cashout, confusing the user.
+  // Update this useEffect to depend on `cashed`.
+  // If `cashed` is true, clear the interval so the visual timer stops immediately.
   useEffect(() => {
     if (active) {
       startTime.current = Date.now();
@@ -233,9 +236,8 @@ function MinesControls({ active, onAction }: { active: boolean; onAction: (a: Ru
           <button
             key={idx}
             onClick={() => reveal(idx)}
-            className={`aspect-square rounded-md border border-white/10 text-sm font-semibold ${
-              revealed.has(idx) ? "bg-green-500/30" : "bg-white/5 hover:bg-white/10"
-            }`}
+            className={`aspect-square rounded-md border border-white/10 text-sm font-semibold ${revealed.has(idx) ? "bg-green-500/30" : "bg-white/5 hover:bg-white/10"
+              }`}
             disabled={!active}
           >
             {revealed.has(idx) ? "+" : ""}
@@ -623,6 +625,8 @@ function MiniCardRow({ label, cards, highlight }: { label: string; cards: string
 function ResultDetails({ gameId, details }: { gameId: GameId; details: any }) {
   switch (gameId) {
     case "crash":
+      // TODO(Codex 5.2): Display the multiplier (e.g. "1.50x") instead of time (e.g. "1.2s").
+      // Use `details.cashOutMultiplier` if available (see change in crash.ts).
       return (
         <div className="text-xs text-white/70">
           Crash point: {details.crashPoint}x · Your cash: {details.cashAt ?? "N/A"}s

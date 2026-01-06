@@ -22,11 +22,17 @@ export function simulateCrashRun(seed: string, transcript: RunAction[]) {
   const cash = transcript.find((a) => a.type === "cashout");
   const cashAt = cash?.at ?? state.crashPoint + 1; // if no cash, treat as after crash
   const multiplier = crashMultiplier(cashAt);
+  const cashOutMultiplier = Number(multiplier.toFixed(2));
+  const crashPoint = Number(state.crashPoint.toFixed(2));
   const crashed = multiplier >= state.crashPoint;
+  // TODO(Codex 5.2): The user is confused because results show time (s) but crash is in multiplier (x).
+  // Please calculate the user's cash-out multiplier here:
+  // const cashOutMultiplier = crashMultiplier(cashAt);
+  // And return it in the 'details' object below so the frontend can display it.
   return {
-    score: crashed ? 0 : Number(multiplier.toFixed(2)),
-    crashPoint: Number(state.crashPoint.toFixed(2)),
+    score: crashed ? 0 : cashOutMultiplier,
+    crashPoint,
     crashed,
-    details: { crashPoint: Number(state.crashPoint.toFixed(2)), cashAt: Number(cashAt.toFixed(2)) },
+    details: { crashPoint, cashAt: Number(cashAt.toFixed(2)), cashOutMultiplier },
   };
 }
